@@ -111,4 +111,4 @@ class SipantauApp extends StatelessWidget {
   }
 }
 
-// flutter run -d cherome --web-browser-flag "--disable-web-security" 
+// flutter run -d chrome --web-browser-flag "--disable-web-security" 
