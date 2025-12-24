@@ -13,13 +13,17 @@ dependencies:
   google_fonts: ^6.1.0
   # Ikon tambahan
   cupertino_icons: ^1.0.2
+  
+  # Backend Firebase
   firebase_core: ^4.2.1
   firebase_auth: ^6.1.2
-  google_sign_in: 6.2.1
-  shared_preferences: ^2.5.4
-  firebase_storage: ^13.0.4
-  image_picker: ^1.2.1
   cloud_firestore: ^6.1.0
+  firebase_storage: ^13.0.4
+  google_sign_in: ^6.2.1
+  
+  # Fitur Pendukung
+  shared_preferences: ^2.5.4
+  image_picker: ^1.2.1
   intl: ^0.20.2
   flutter_local_notifications: ^17.0.0
 

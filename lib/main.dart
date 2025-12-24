@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import Auth
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'utils/notification_helper.dart';
-
+import 'utils/notification_helper.dart'; // [cite: 189]
 
 // Import halaman-halaman penting
-import 'login_screen.dart';
-import 'main_navigation.dart';
+import 'login_screen.dart'; // [cite: 189]
+import 'main_navigation.dart'; // [cite: 190]
 
-// 1. Variabel Global untuk Mengontrol Tema
-final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+// 1. Variabel Global untuk Mengontrol Tema (Light/Dark Mode)
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light); // [cite: 190]
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await NotificationHelper.init();
-  runApp(const MyApp());
+  // Memastikan semua komponen Flutter siap sebelum menjalankan kode lain
+  WidgetsFlutterBinding.ensureInitialized(); // [cite: 190]
+  
+  // Inisialisasi sistem notifikasi
+  await NotificationHelper.init(); // [cite: 191]
 
-  if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          // PASTIKAN DATA INI TETAP SESUAI DENGAN FIREBASE ANDA
-          apiKey: "AIzaSyBFGKtYHdRsTf_g_J_o9fMboiziQrXx7xs",
-          authDomain: "test-sipantau.firebaseapp.com",
-          projectId: "test-sipantau",
-          storageBucket: "test-sipantau.firebasestorage.app",
-          messagingSenderId: "313304355828",
-          appId: "1:313304355828:web:30efd9dc9ce5a4ba009fa1",
-          measurementId: "G-80JJR4DSY5"),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
+  // --- SOLUSI ERROR ANDROID ---
+  // Kita buat satu variabel untuk menampung konfigurasi Firebase
+  const firebaseOptions = FirebaseOptions(
+    apiKey: "AIzaSyBFGKtYHdRsTf_g_J_o9fMboiziQrXx7xs", // [cite: 191]
+    authDomain: "test-sipantau.firebaseapp.com",
+    projectId: "test-sipantau",
+    storageBucket: "test-sipantau.firebasestorage.app",
+    messagingSenderId: "313304355828",
+    appId: "1:313304355828:web:30efd9dc9ce5a4ba009fa1", // 
+    measurementId: "G-80JJR4DSY5",
+  );
 
-  runApp(const SipantauApp());
+  // Inisialisasi Firebase menggunakan options di atas agar Android & Web sama-sama lancar
+  await Firebase.initializeApp(options: firebaseOptions); // 
+
+  // JALANKAN APLIKASI
+  runApp(const SipantauApp()); // 
 }
 
 class SipantauApp extends StatelessWidget {
@@ -42,25 +43,24 @@ class SipantauApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Mendengarkan perubahan tema (Dark/Light)
     return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
+      valueListenable: themeNotifier, // [cite: 194]
       builder: (context, currentMode, child) {
         return MaterialApp(
           title: 'SIPANTAU',
           debugShowCheckedModeBanner: false,
-
-          // Mengatur Mode saat ini (Light/Dark)
-          themeMode: currentMode,
+          themeMode: currentMode, // [cite: 194]
 
           // --- TEMA TERANG (LIGHT) ---
           theme: ThemeData(
             brightness: Brightness.light,
-            primaryColor: const Color(0xFF5CB85C),
+            primaryColor: const Color(0xFF5CB85C), // [cite: 195]
             colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xFF5CB85C),
                 brightness: Brightness.light),
             useMaterial3: true,
-            textTheme: GoogleFonts.poppinsTextTheme(),
+            textTheme: GoogleFonts.poppinsTextTheme(), // [cite: 196]
             scaffoldBackgroundColor: const Color(0xFFF5F5F5),
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.transparent,
@@ -72,41 +72,36 @@ class SipantauApp extends StatelessWidget {
           // --- TEMA GELAP (DARK) ---
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            primaryColor: const Color(0xFF5CB85C),
+            primaryColor: const Color(0xFF5CB85C), // [cite: 197]
             colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xFF5CB85C),
-                brightness: Brightness.dark),
+                brightness: Brightness.dark), // [cite: 198]
             useMaterial3: true,
             textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
             scaffoldBackgroundColor: const Color(0xFF121212),
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              iconTheme: IconThemeData(color: Colors.white),
+              iconTheme: IconThemeData(color: Colors.white), // [cite: 199]
             ),
             cardColor: const Color(0xFF1E1E1E),
           ),
 
-          // --- DISINI KUNCI PERBAIKANNYA ---
-          // Jangan langsung ke LoginScreen(), tapi cek status dulu pakai StreamBuilder
+          // StreamBuilder untuk cek status login
           home: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance
-                .authStateChanges(), // Mendengarkan status login
+            stream: FirebaseAuth.instance.authStateChanges(), // [cite: 200]
             builder: (context, snapshot) {
-              // 1. Jika sedang loading (koneksi lambat), tampilkan loading bulat
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
+                  body: Center(child: CircularProgressIndicator()), // [cite: 201]
                 );
               }
 
-              // 2. Jika ada Data User (Artinya SUDAH LOGIN), langsung ke HOME
               if (snapshot.hasData) {
-                return const MainNavigation();
+                return const MainNavigation(); // [cite: 202]
               }
 
-              // 3. Jika Tidak ada data (BELUM LOGIN / LOGOUT), ke LOGIN SCREEN
-              return const LoginScreen();
+              return const LoginScreen(); // [cite: 203]
             },
           ),
         );
@@ -114,5 +109,3 @@ class SipantauApp extends StatelessWidget {
     );
   }
 }
-
-// flutter run -d cherome --web-browser-flag "--disable-web-security" 

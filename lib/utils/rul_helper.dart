@@ -3,11 +3,7 @@ class RulResult {
   final int sisaHari;
   final String status;
 
-  RulResult({
-    required this.sisaKm,
-    required this.sisaHari,
-    required this.status,
-  });
+  RulResult({required this.sisaKm, required this.sisaHari, required this.status});
 }
 
 class RulHelper {
@@ -17,34 +13,29 @@ class RulHelper {
     required int odoTerakhirServis,
     required DateTime tanggalTerakhirServis,
   }) {
-    // ===== KONFIGURASI =====
-    final maxKm = jenisKendaraan == "mobil" ? 5000 : 2000;
-    final warningKm = jenisKendaraan == "mobil" ? 1000 : 200;
+    // ATURAN JARAK (KM)
+    // Mobil: 8000 KM, Motor: 3000 KM [cite: 612-613]
+    final maxKm = jenisKendaraan.toLowerCase() == "mobil" ? 8000 : 3000;
+    
+    // ATURAN WAKTU (HARI)
+    // Mobil: 6 bulan (180 hari), Motor: 2 bulan (60 hari)
+    final maxHari = jenisKendaraan.toLowerCase() == "mobil" ? 180 : 60;
 
-    final maxHari = 180;
-    final warningHari = 10;
-
-    // ===== HITUNG =====
+    // HITUNG SISA [cite: 614-616]
     final kmTerpakai = odoSekarang - odoTerakhirServis;
     final sisaKm = maxKm - kmTerpakai;
 
-    final hariTerpakai =
-        DateTime.now().difference(tanggalTerakhirServis).inDays;
+    final hariTerpakai = DateTime.now().difference(tanggalTerakhirServis).inDays;
     final sisaHari = maxHari - hariTerpakai;
 
-    // ===== STATUS =====
+    // TENTUKAN STATUS [cite: 617-619]
     String status = "AMAN";
-
     if (sisaKm <= 0 || sisaHari <= 0) {
       status = "HARUS SERVIS";
-    } else if (sisaKm <= warningKm || sisaHari <= warningHari) {
+    } else if (sisaKm <= 1000 || sisaHari <= 14) {
       status = "MENDEKATI SERVIS";
     }
 
-    return RulResult(
-      sisaKm: sisaKm,
-      sisaHari: sisaHari,
-      status: status,
-    );
+    return RulResult(sisaKm: sisaKm, sisaHari: sisaHari, status: status);
   }
 }
