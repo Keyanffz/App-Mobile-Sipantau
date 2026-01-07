@@ -129,7 +129,7 @@ class HomeScreen extends StatelessWidget {
 
               // --- BAGIAN SCROLL (BAWAH) - DAFTAR MOBIL ---
               Expanded(
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance

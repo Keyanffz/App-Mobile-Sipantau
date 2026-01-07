@@ -111,4 +111,7 @@ class SipantauApp extends StatelessWidget {
   }
 }
 
-// flutter run -d cherome --web-browser-flag "--disable-web-security" 
+// flutter run -d cherome --web-browser-flag "--disable-web-security"
+
+// admin@gmail.com
+// 123456
