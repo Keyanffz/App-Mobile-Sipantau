@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../car/car_detail_screen.dart'; 
-import '../car/car_add_screen.dart'; 
-import '../profile/profile_screen.dart'; // 1. JANGAN LUPA IMPORT INI
+import '../car/car_detail_screen.dart';
+import '../car/car_add_screen.dart';
+import '../profile/profile_screen.dart';
+import 'fuel_car_selection_screen.dart'; // Pastikan file ini ada di folder lib/home/
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,10 +43,8 @@ class HomeScreen extends StatelessWidget {
             actions: [
               IconButton(onPressed: (){}, icon: Icon(Icons.notifications_outlined, color: textColor)),
               
-              // 2. BAGIAN INI KITA BUNGKUS AGAR BISA DIKLIK
               GestureDetector(
                 onTap: () {
-                  // Navigasi ke Halaman Profil
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ProfileScreen()),
@@ -99,7 +98,21 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildMenuItem(Icons.local_gas_station, "Bahan Bakar", Colors.indigo, textColor, cardColor),
+                        // MENU BAHAN BAKAR (Klik -> Pilih Mobil)
+                        _buildMenuItem(
+                          Icons.local_gas_station, 
+                          "Bahan Bakar", 
+                          Colors.indigo, 
+                          textColor, 
+                          cardColor,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const FuelCarSelectionScreen()),
+                            );
+                          },
+                        ),
+                        // MENU LAINNYA (Placeholder)
                         _buildMenuItem(Icons.monetization_on, "Pengeluaran", Colors.red, textColor, cardColor),
                         _buildMenuItem(Icons.description, "Laporan", Colors.blue, textColor, cardColor),
                       ],
@@ -107,7 +120,7 @@ class HomeScreen extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    // Header + Tombol Tambah
+                    // Header Daftar Mobil + Tombol Tambah
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -204,21 +217,26 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String label, Color iconColor, Color textColor, Color bgColor) {
-    return Container(
-      width: 100,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        children: [
-          Icon(icon, size: 35, color: iconColor), 
-          const SizedBox(height: 8), 
-          Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: textColor))
-        ]
+  // WIDGET HELPER MENU ITEM (Updated with onTap)
+  Widget _buildMenuItem(IconData icon, String label, Color iconColor, Color textColor, Color bgColor, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          children: [
+            Icon(icon, size: 35, color: iconColor), 
+            const SizedBox(height: 8), 
+            Text(label, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: textColor))
+          ]
+        ),
       ),
     );
   }
 
+  // WIDGET HELPER KARTU MOBIL
   Widget _buildCarCard(BuildContext context, Map<String, dynamic> carData, String docId, Color textColor, Color cardColor) {
     
     String plat = carData['plat'] ?? "No Plat";
