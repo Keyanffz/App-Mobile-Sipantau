@@ -68,13 +68,5 @@ Seluruh data tersimpan aman di **Firebase Firestore** dan terhubung dengan **Fir
     flutter run
     ```
 
----
-
-## 👨‍💻 Kontributor
-* **Keyanffz** - Developer Utama & UI Implementation
-* **Xeno-code7** - Collaborator
-
----
-
 ## 📄 Lisensi
 Project ini dibuat untuk tujuan pembelajaran dan pengembangan portofolio.
